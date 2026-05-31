@@ -1,0 +1,79 @@
+/**
+ * Contrat de l'API REST :
+ *
+ * GET    /slots?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD   → Slot[]
+ * GET    /slots/:id                                        → Slot
+ * POST   /slots/:id/book                                   → BookSlotResponse
+ *          body: { userName, email }
+ * DELETE /slots/:id/book/:bookingId                        → CancelBookingResponse
+ */
+
+import axios from 'axios';
+import type {
+  Slot,
+  GetSlotsParams,
+  BookSlotRequest,
+  BookSlotResponse,
+  CancelBookingResponse,
+} from '../types';
+
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3000/api',
+  headers: { 'Content-Type': 'application/json' },
+  timeout: 10_000,
+});
+
+// Intercepteur global pour les erreurs
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const message: string =
+      error.response?.data?.message ?? error.message ?? 'Erreur inconnue';
+    return Promise.reject(new Error(message));
+  }
+);
+
+export const slotsApi = {
+  /**
+   * Récupère tous les créneaux entre deux dates incluses.
+   */
+  getSlots: async (params: GetSlotsParams): Promise<Slot[]> => {
+    const { data } = await api.get<Slot[]>('/slots', { params });
+    return data;
+  },
+
+  /**
+   * Récupère un créneau par son identifiant.
+   */
+  getSlotById: async (id: string): Promise<Slot> => {
+    const { data } = await api.get<Slot>(`/slots/${id}`);
+    return data;
+  },
+
+  /**
+   * Réserve un créneau pour un utilisateur.
+   */
+  bookSlot: async (
+    slotId: string,
+    payload: BookSlotRequest
+  ): Promise<BookSlotResponse> => {
+    const { data } = await api.post<BookSlotResponse>(
+      `/slots/${slotId}/book`,
+      payload
+    );
+    return data;
+  },
+
+  /**
+   * Annule une réservation existante.
+   */
+  cancelBooking: async (
+    slotId: string,
+    bookingId: string
+  ): Promise<CancelBookingResponse> => {
+    const { data } = await api.delete<CancelBookingResponse>(
+      `/slots/${slotId}/book/${bookingId}`
+    );
+    return data;
+  },
+};
