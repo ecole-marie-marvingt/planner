@@ -1,0 +1,24 @@
+﻿<Project Sdk="Aspire.AppHost.Sdk/13.3.5">
+
+  <ItemGroup>
+    <ProjectReference Include="..\Planner.Api\Planner.Api.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.JavaScript" Version="13.3.5" />
+    <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="13.3.5" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <UserSecretsId>34fc6c0a-f9c1-4516-9f6e-2070ec495c37</UserSecretsId>
+  </PropertyGroup>
+	
+  <PropertyGroup>
+    <NoWarn>$(NoWarn);ASPIREJAVASCRIPT001</NoWarn>
+  </PropertyGroup>
+
+</Project>

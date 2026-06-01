@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="Planner.Api/Planner.Api.csproj" />
+  <Project Path="Planner.AppHost/Planner.AppHost.csproj" />
+  <Project Path="Planner.ServiceDefaults/Planner.ServiceDefaults.csproj" />
+</Solution>

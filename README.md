@@ -1,6 +1,83 @@
-# React + TypeScript + Vite
+# Planner – École Marie Marvingt
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Application de réservation de créneaux sportifs (piscine).
+
+## Structure du projet
+
+```
+planner/
+├── frontend/          # Application React + Vite + Redux
+│   ├── src/
+│   ├── index.html
+│   ├── package.json
+│   └── vite.config.ts
+│
+├── backend/           # Solution .NET 10
+│   ├── Planner.sln
+│   ├── Planner.AppHost/       # Aspire AppHost (orchestration)
+│   ├── Planner.ServiceDefaults/   # Defaults Aspire (OTel, health checks)
+│   └── Planner.Api/           # ASP.NET Core Minimal API + Dapper + Npgsql
+│
+└── db/
+    └── init/
+        ├── 01_create_tables.sql   # Schéma PostgreSQL
+        └── 02_seed_data.sql       # Données de démonstration
+```
+
+## Prérequis
+
+- [.NET 10 SDK](https://dotnet.microsoft.com/download)
+- [Node.js 20+](https://nodejs.org/) + [Yarn](https://yarnpkg.com/)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (pour Aspire + Postgres)
+- [.NET Aspire workload](https://learn.microsoft.com/dotnet/aspire/fundamentals/setup-tooling) :
+  ```bash
+  dotnet workload install aspire
+  ```
+
+## Démarrage rapide
+
+### Backend (API + Postgres via Aspire)
+
+```bash
+cd backend
+dotnet run --project Planner.AppHost
+```
+
+Le dashboard Aspire s'ouvre automatiquement. L'API sera disponible sur `https://localhost:{port}/api/slots`.
+
+### Frontend (React)
+
+```bash
+cd frontend
+yarn install
+yarn dev
+```
+
+L'application est accessible sur `http://localhost:5173/planner/`.
+
+## API REST
+
+| Méthode | Route | Description |
+|---------|-------|-------------|
+| `GET` | `/api/slots?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD&email=...` | Lister les créneaux |
+| `GET` | `/api/slots/{id}?email=...` | Détail d'un créneau |
+| `POST` | `/api/slots/{id}/book` | Réserver (`{userName, email}`) |
+| `DELETE` | `/api/slots/{id}/book/{bookingId}` | Annuler une réservation |
+
+La documentation OpenAPI est disponible sur `/openapi/v1.json` en mode développement.
+
+## Variables d'environnement
+
+### Frontend (`frontend/.env.local`)
+
+```
+VITE_API_BASE_URL=https://localhost:PORT/api
+```
+
+### Backend
+
+La chaîne de connexion PostgreSQL est injectée automatiquement par Aspire via la variable `ConnectionStrings__plannerdb`.
+
 
 Currently, two official plugins are available:
 
