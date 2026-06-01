@@ -26,7 +26,7 @@ INSERT INTO slots (date, start_time, end_time, title, description, capacity) VAL
 ('2026-06-03', '10:00', '11:00', 'Cours de natation – débutants',
  'Apprentissage des bases : flottaison, respiration, crawl.', 12),
 ('2026-06-03', '13:00', '14:00', 'Baby natation (3-5 ans)',
- 'Initiation à l\'eau pour les tout-petits, avec les parents.', 6),
+ 'Initiation à l eau pour les tout-petits, avec les parents.', 6),
 ('2026-06-03', '15:00', '16:00', 'Natation synchronisée – initiation', NULL, 10),
 
 -- Jeudi 4 juin

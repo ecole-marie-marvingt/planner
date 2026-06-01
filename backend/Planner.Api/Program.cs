@@ -1,4 +1,3 @@
-using Planner.Api.Endpoints;
 using Planner.Api.Repositories;
 using Scalar.AspNetCore;
 
@@ -8,22 +7,22 @@ var builder = WebApplication.CreateBuilder(args);
 builder.AddServiceDefaults();
 
 // ── PostgreSQL via Aspire (NpgsqlDataSource injecté automatiquement) ──────────
-builder.AddNpgsqlDataSource("plannerdb", configureDataSourceBuilder: builder =>
-{
-    builder.MapComposite<DateOnly>("date");
-});
+builder.AddNpgsqlDataSource("plannerdb");
+Dapper.SqlMapper.AddTypeMap(typeof(DateOnly), System.Data.DbType.Date, true);
+Dapper.SqlMapper.AddTypeMap(typeof(TimeOnly), System.Data.DbType.Time, true);
 
 // ── Sérialisation JSON : camelCase pour correspondre aux types TypeScript ─────
-builder.Services.ConfigureHttpJsonOptions(options =>
-{
-    options.SerializerOptions.PropertyNamingPolicy =
-        System.Text.Json.JsonNamingPolicy.CamelCase;
-    options.SerializerOptions.Converters.Add(
-        new System.Text.Json.Serialization.JsonStringEnumConverter(
-            System.Text.Json.JsonNamingPolicy.CamelCase));
-    options.SerializerOptions.DefaultIgnoreCondition =
-        System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
-});
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy =
+            System.Text.Json.JsonNamingPolicy.CamelCase;
+        options.JsonSerializerOptions.Converters.Add(
+            new System.Text.Json.Serialization.JsonStringEnumConverter(
+                System.Text.Json.JsonNamingPolicy.CamelCase));
+        options.JsonSerializerOptions.DefaultIgnoreCondition =
+            System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
+    });
 
 // ── Repositories ──────────────────────────────────────────────────────────────
 builder.Services.AddScoped<ISlotRepository, SlotRepository>();
@@ -32,11 +31,12 @@ builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 // ── OpenAPI / Swagger ─────────────────────────────────────────────────────────
 builder.Services.AddOpenApi();
 
-// ── CORS (pour le frontend React en dev) ──────────────────────────────────────
+// ── CORS ──────────────────────────────────────────────────────────────────────
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
         policy.WithOrigins(
+                "https://ecole-marie-marvingt.github.io",
                 builder.Configuration["Frontend:Url"] ?? "http://localhost:5173")
               .AllowAnyHeader()
               .AllowAnyMethod());
@@ -57,7 +57,7 @@ app.UseHttpsRedirection();
 // ── Aspire : health checks & service discovery ────────────────────────────────
 app.MapDefaultEndpoints();
 
-// ── Endpoints métier ──────────────────────────────────────────────────────────
-app.MapSlotsEndpoints();
+// ── Controllers ──────────────────────────────────────────────────────────────
+app.MapControllers();
 
 app.Run();

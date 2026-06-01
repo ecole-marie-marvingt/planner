@@ -1,11 +1,11 @@
 /**
  * Contrat de l'API REST :
  *
- * GET    /slots?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD   → Slot[]
- * GET    /slots/:id                                        → Slot
- * POST   /slots/:id/book                                   → BookSlotResponse
+ * GET    /api/slots?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD   → Slot[]
+ * GET    /api/slots/:id                                        → Slot
+ * POST   /api/slots/:id/book                                   → BookSlotResponse
  *          body: { userName, email }
- * DELETE /slots/:id/book/:bookingId                        → CancelBookingResponse
+ * DELETE /api/slots/:id/book/:bookingId                        → CancelBookingResponse
  */
 
 import axios from 'axios';
@@ -18,7 +18,7 @@ import type {
 } from '../types';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3000/api',
+  baseURL: import.meta.env.PROD ? import.meta.env.VITE_API_BASE_URL : null,
   headers: { 'Content-Type': 'application/json' },
   timeout: 10_000,
 });
@@ -38,7 +38,7 @@ export const slotsApi = {
    * Récupère tous les créneaux entre deux dates incluses.
    */
   getSlots: async (params: GetSlotsParams): Promise<Slot[]> => {
-    const { data } = await api.get<Slot[]>('/slots', { params });
+    const { data } = await api.get<Slot[]>('/api/slots', { params });
     return data;
   },
 
@@ -46,7 +46,7 @@ export const slotsApi = {
    * Récupère un créneau par son identifiant.
    */
   getSlotById: async (id: string): Promise<Slot> => {
-    const { data } = await api.get<Slot>(`/slots/${id}`);
+    const { data } = await api.get<Slot>(`/api/slots/${id}`);
     return data;
   },
 
@@ -58,7 +58,7 @@ export const slotsApi = {
     payload: BookSlotRequest
   ): Promise<BookSlotResponse> => {
     const { data } = await api.post<BookSlotResponse>(
-      `/slots/${slotId}/book`,
+      `/api/slots/${slotId}/book`,
       payload
     );
     return data;
@@ -72,7 +72,7 @@ export const slotsApi = {
     bookingId: string
   ): Promise<CancelBookingResponse> => {
     const { data } = await api.delete<CancelBookingResponse>(
-      `/slots/${slotId}/book/${bookingId}`
+      `/api/slots/${slotId}/book/${bookingId}`
     );
     return data;
   },

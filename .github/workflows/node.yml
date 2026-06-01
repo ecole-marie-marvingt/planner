@@ -29,7 +29,7 @@ jobs:
     - name: Install Yarn
       run: npm install -g yarn
     - run: cd frontend && yarn
-    - run: cd frontend && yarn build
+    - run: cd frontend && yarn build --mode production
 
     - name: Upload GitHub Pages artifact
       uses: actions/upload-pages-artifact@v3

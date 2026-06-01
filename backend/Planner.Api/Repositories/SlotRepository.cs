@@ -28,7 +28,7 @@ public sealed class SlotRepository(NpgsqlDataSource dataSource) : ISlotRepositor
                     ELSE 'available'
                 END AS status,
                 COALESCE(bool_or(b.email = @UserEmail), FALSE) AS isbookedbyMe,
-                MAX(CASE WHEN b.email = @UserEmail THEN b.id END) AS bookingid
+                MAX(CASE WHEN b.email = @UserEmail THEN b.id::text END)::uuid AS bookingid
             FROM slots s
             LEFT JOIN bookings b ON b.slot_id = s.id
             WHERE s.date BETWEEN @StartDate AND @EndDate
@@ -67,7 +67,7 @@ public sealed class SlotRepository(NpgsqlDataSource dataSource) : ISlotRepositor
                     ELSE 'available'
                 END AS status,
                 COALESCE(bool_or(b.email = @UserEmail), FALSE) AS isbookedbyMe,
-                MAX(CASE WHEN b.email = @UserEmail THEN b.id END) AS bookingid
+                MAX(CASE WHEN b.email = @UserEmail THEN b.id::text END)::uuid AS bookingid
             FROM slots s
             LEFT JOIN bookings b ON b.slot_id = s.id
             WHERE s.id = @Id

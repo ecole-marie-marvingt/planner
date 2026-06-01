@@ -3,12 +3,14 @@ using Aspire.Hosting;
 var builder = DistributedApplication.CreateBuilder(args);
 
 // ── PostgreSQL ────────────────────────────────────────────────────────────────
-var postgres = builder.AddPostgres("postgres")
+
+var databaseName = "plannerdb";
+var plannerDb = builder.AddPostgres("postgres")
     .WithDataVolume("planner-postgres-data")
     .WithPgAdmin()
-    .WithInitFiles("../../db/init");  // scripts SQL d'init
-
-var plannerDb = postgres.AddDatabase("plannerdb");
+    .WithInitFiles("../../db/init")
+    .WithEnvironment("POSTGRES_DB", databaseName)
+    .AddDatabase(databaseName);
 
 // ── API ───────────────────────────────────────────────────────────────────────
 var api = builder.AddProject<Projects.Planner_Api>("planner-api")
@@ -16,8 +18,9 @@ var api = builder.AddProject<Projects.Planner_Api>("planner-api")
     .WaitFor(plannerDb);
 
 builder.AddViteApp("planner-front", "../../frontend")
+    .WithArgs("--mode", "development")
+    .WithEnvironment("VITE_API_BASE_URL", api.GetEndpoint("https"))
     .WithYarn()
-    .WithHttpEndpoint(port: 3000)
     .PublishAsStaticWebsite(apiPath: "/api", apiTarget: api)
     .WithExternalHttpEndpoints()
     .WithReference(api)
