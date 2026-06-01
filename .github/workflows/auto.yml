@@ -1,0 +1,37 @@
+name: Planner CI
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - feature/*
+      - hotfix/*
+      - release/*
+  pull_request:
+    types: [opened, synchronize, reopened]
+  
+jobs:
+  build:
+    name: Build and analyze
+    uses: ./.github/workflows/dotnet.yml
+    secrets:
+      sonar-token: ${{ secrets.SONAR_TOKEN }}
+      github-token: ${{ secrets.GITHUB_TOKEN }}
+    with:
+      sonar: false
+      publish: ${{ github.event_name != 'pull_request' }}
+  package:
+    name: Build image and push to registry
+    uses: ./.github/workflows/deploy.yml
+    if: success() && github.event_name != 'pull_request'
+    needs: build
+    secrets:
+      github-token: ${{ secrets.GITHUB_TOKEN }}
+    with:
+      registry: ghcr.io/ecole-marie-marvingt
+      image-name: planner/api
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
