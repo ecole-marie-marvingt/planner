@@ -110,8 +110,6 @@ jobs:
           ssh-keyscan -p ${{ secrets.ssh-port || 22 }} -H ${{ secrets.ssh-host }} >> ~/.ssh/known_hosts 2>/dev/null || true
       
       - name: Deploy container via SSH
-        env:
-          POSTGRES_CONNECTION_STRING: Host=$POSTGRES_HOST;Port=5432;Username=${{ secrets.postgres-username }};Password=${{ secrets.postgres-password }};Database=plannerdb;Application Name=Planner.Api;Minimum Pool Size=1;
         run: |
           ssh -p ${{ secrets.ssh-port || 22 }} ${{ secrets.ssh-username }}@${{ secrets.ssh-host }} << 'EOF'
           # Login to Docker registry
@@ -127,7 +125,7 @@ jobs:
           # Run new container
           docker run -d \
             --name planner-app \
-            -e ConnectionStrings__plannerdb="$POSTGRES_CONNECTIONSTRING" \
+            -e ConnectionStrings__plannerdb="Host=172.17.0.1;Port=5432;Username=${{ secrets.postgres-username }};Password=${{ secrets.postgres-password }};Database=plannerdb;Application Name=Planner.Api;Minimum Pool Size=1" \
             -e ASPNETCORE_ENVIRONMENT=Production \
             -p 8090:8080 \
             ${{ inputs.registry }}/${{ inputs.image-name }}:latest
