@@ -33,6 +33,8 @@ jobs:
       ssh-port: ${{ secrets.SSH_PORT }}
       ssh-username: ${{ secrets.SSH_USERNAME }}
       ssh-key: ${{ secrets.SSH_KEY }}
+      postgres-username: ${{ secrets.POSTGRES_USERNAME }}
+      postgres-password: ${{ secrets.POSTGRES_PASSWORD }}
     with:
       registry: ghcr.io/ecole-marie-marvingt
       image-name: planner/api
