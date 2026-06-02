@@ -34,7 +34,7 @@ public class SlotsController(
     }
 
     // GET /api/slots/{id}
-    [HttpGet("{id:guid}")]
+    [HttpGet("{id:guid}", Name = nameof(GetSlotByIdAsync))]
     [ProducesResponseType<Slot>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetSlotByIdAsync(
@@ -70,7 +70,7 @@ public class SlotsController(
         var booking = await bookingRepo.CreateBookingAsync(id, request.UserName, request.Email, ct);
         var updatedSlot = await slotRepo.GetSlotByIdAsync(id, request.Email, ct);
 
-        return CreatedAtAction(
+        return CreatedAtRoute(
             nameof(GetSlotByIdAsync),
             new { id },
             new BookSlotResponse(booking, updatedSlot!));
