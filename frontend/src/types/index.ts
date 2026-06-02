@@ -22,6 +22,7 @@ export interface Booking {
   userName: string;
   email: string;
   bookedAt: string; // ISO 8601
+  cancellationToken: string;
 }
 
 // ─── Requêtes / Réponses API ──────────────────────────────────────────────────

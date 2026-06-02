@@ -3,9 +3,17 @@ import CalendarHeader from './components/Calendar/CalendarHeader';
 import CalendarGrid from './components/Calendar/CalendarGrid';
 import SlotList from './components/Slots/SlotList';
 import BookingModal from './components/Slots/BookingModal';
+import CancellationPage from './components/Slots/CancellationPage';
 import './App.css';
 
+// Détection du token d'annulation dans l'URL (?cancel=<token>)
+const cancelToken = new URLSearchParams(window.location.search).get('cancel');
+
 const App: React.FC = () => {
+  if (cancelToken) {
+    return <CancellationPage cancellationToken={cancelToken} />;
+  }
+
   return (
     <div className="app">
       <header className="app-header">

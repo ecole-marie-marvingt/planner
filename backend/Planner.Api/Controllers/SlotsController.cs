@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Planner.Api.DTOs;
 using Planner.Api.Models;
 using Planner.Api.Repositories;
+using Planner.Api.Services;
 
 namespace Planner.Api.Controllers;
 
@@ -10,7 +11,9 @@ namespace Planner.Api.Controllers;
 [Produces("application/json")]
 public class SlotsController(
     ISlotRepository slotRepo,
-    IBookingRepository bookingRepo) : ControllerBase
+    IBookingRepository bookingRepo,
+    IEmailService emailService,
+    IConfiguration configuration) : ControllerBase
 {
     // GET /api/slots?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD
     [HttpGet]
@@ -68,7 +71,15 @@ public class SlotsController(
             return Conflict("Vous avez déjà réservé ce créneau.");
 
         var booking = await bookingRepo.CreateBookingAsync(id, request.UserName, request.Email, ct);
+
+        // Construire l'URL d'annulation et envoyer l'email de confirmation
+        var frontendUrl = configuration["Frontend:Url"] ?? "https://ecole-marie-marvingt.github.io/planner";
+        booking.CancellationUrl = $"{frontendUrl.TrimEnd('/')}?cancel={booking.CancellationToken}";
+
         var updatedSlot = await slotRepo.GetSlotByIdAsync(id, request.Email, ct);
+
+        // Envoi en tâche de fond pour ne pas bloquer la réponse
+        _ = emailService.SendBookingConfirmationAsync(booking, updatedSlot!, CancellationToken.None);
 
         return CreatedAtRoute(
             nameof(GetSlotByIdAsync),

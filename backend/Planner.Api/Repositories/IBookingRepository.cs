@@ -8,6 +8,10 @@ public interface IBookingRepository
         Guid bookingId,
         CancellationToken ct = default);
 
+    Task<Planner.Api.Models.Booking?> GetBookingByCancellationTokenAsync(
+        Guid cancellationToken,
+        CancellationToken ct = default);
+
     Task<Planner.Api.Models.Booking> CreateBookingAsync(
         Guid slotId,
         string userName,

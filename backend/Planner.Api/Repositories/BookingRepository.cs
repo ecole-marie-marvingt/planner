@@ -6,17 +6,25 @@ namespace Planner.Api.Repositories;
 
 public sealed class BookingRepository(NpgsqlDataSource dataSource) : IBookingRepository
 {
+    private const string SelectColumns = """
+        id AS bookingid, slot_id AS slotid, user_name AS username,
+        email, booked_at AS bookedat, cancellation_token AS cancellationtoken
+        """;
+
     public async Task<Booking?> GetBookingAsync(Guid bookingId, CancellationToken ct = default)
     {
-        const string sql = """
-            SELECT id AS bookingid, slot_id AS slotid, user_name AS username,
-                   email, booked_at AS bookedat
-            FROM bookings
-            WHERE id = @BookingId
-            """;
-
+        var sql = $"SELECT {SelectColumns} FROM bookings WHERE id = @BookingId";
         await using var conn = await dataSource.OpenConnectionAsync(ct);
         return await conn.QueryFirstOrDefaultAsync<Booking>(sql, new { BookingId = bookingId });
+    }
+
+    public async Task<Booking?> GetBookingByCancellationTokenAsync(
+        Guid cancellationToken,
+        CancellationToken ct = default)
+    {
+        var sql = $"SELECT {SelectColumns} FROM bookings WHERE cancellation_token = @CancellationToken";
+        await using var conn = await dataSource.OpenConnectionAsync(ct);
+        return await conn.QueryFirstOrDefaultAsync<Booking>(sql, new { CancellationToken = cancellationToken });
     }
 
     public async Task<Booking> CreateBookingAsync(
@@ -26,10 +34,10 @@ public sealed class BookingRepository(NpgsqlDataSource dataSource) : IBookingRep
         CancellationToken ct = default)
     {
         const string sql = """
-            INSERT INTO bookings (id, slot_id, user_name, email, booked_at)
-            VALUES (@Id, @SlotId, @UserName, @Email, @BookedAt)
+            INSERT INTO bookings (id, slot_id, user_name, email, booked_at, cancellation_token)
+            VALUES (@Id, @SlotId, @UserName, @Email, @BookedAt, @CancellationToken)
             RETURNING id AS bookingid, slot_id AS slotid, user_name AS username,
-                      email, booked_at AS bookedat
+                      email, booked_at AS bookedat, cancellation_token AS cancellationtoken
             """;
 
         var param = new
@@ -38,7 +46,8 @@ public sealed class BookingRepository(NpgsqlDataSource dataSource) : IBookingRep
             SlotId = slotId,
             UserName = userName,
             Email = email,
-            BookedAt = DateTimeOffset.UtcNow
+            BookedAt = DateTimeOffset.UtcNow,
+            CancellationToken = Guid.NewGuid()
         };
 
         await using var conn = await dataSource.OpenConnectionAsync(ct);

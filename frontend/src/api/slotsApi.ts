@@ -6,6 +6,7 @@
  * POST   /api/slots/:id/book                                   → BookSlotResponse
  *          body: { userName, email }
  * DELETE /api/slots/:id/book/:bookingId                        → CancelBookingResponse
+ * GET    /api/bookings/cancel/:cancellationToken               → CancelBookingResponse
  */
 
 import axios from 'axios';
@@ -73,6 +74,16 @@ export const slotsApi = {
   ): Promise<CancelBookingResponse> => {
     const { data } = await api.delete<CancelBookingResponse>(
       `/api/slots/${slotId}/book/${bookingId}`
+    );
+    return data;
+  },
+
+  /**
+   * Annule une réservation via le token contenu dans l'email de confirmation.
+   */
+  cancelByToken: async (cancellationToken: string): Promise<CancelBookingResponse> => {
+    const { data } = await api.get<CancelBookingResponse>(
+      `/api/bookings/cancel/${cancellationToken}`
     );
     return data;
   },

@@ -255,3 +255,16 @@
 .booking-form__actions { display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 0.5rem; }
 .booking-modal__success { display: flex; flex-direction: column; gap: 1rem; align-items: flex-start; }
 .booking-modal__success p { color: var(--color-success); font-weight: 600; }
+
+/* ─── CancellationPage ───────────────────────────────────────────────────── */
+.cancellation-page { display: flex; flex-direction: column; min-height: 100vh; }
+.cancellation-page__main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 2rem; }
+.cancellation-page__card {
+  background: var(--bg-card); border-radius: 0.75rem; box-shadow: 0 4px 24px rgb(0 0 0 / 0.1);
+  padding: 2.5rem; max-width: 480px; width: 100%; text-align: center;
+  display: flex; flex-direction: column; align-items: center; gap: 1rem;
+}
+.cancellation-page__icon { font-size: 3rem; line-height: 1; }
+.cancellation-page__card h2 { font-size: 1.4rem; color: var(--text-primary); }
+.cancellation-page__card p { color: var(--text-secondary); line-height: 1.6; }
+.cancellation-page__sub { font-size: 0.875rem; color: var(--text-muted); }

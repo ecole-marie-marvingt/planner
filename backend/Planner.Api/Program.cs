@@ -1,4 +1,5 @@
 using Planner.Api.Repositories;
+using Planner.Api.Services;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,6 +28,11 @@ builder.Services.AddControllers()
 // ── Repositories ──────────────────────────────────────────────────────────────
 builder.Services.AddScoped<ISlotRepository, SlotRepository>();
 builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+
+// ── Email ─────────────────────────────────────────────────────────────────────
+builder.Services.Configure<EmailSettings>(
+    builder.Configuration.GetSection(EmailSettings.SectionName));
+builder.Services.AddSingleton<IEmailService, EmailService>();
 
 // ── OpenAPI / Swagger ─────────────────────────────────────────────────────────
 builder.Services.AddOpenApi();

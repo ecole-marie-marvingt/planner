@@ -35,6 +35,7 @@ jobs:
       ssh-key: ${{ secrets.SSH_KEY }}
       postgres-username: ${{ secrets.POSTGRES_USERNAME }}
       postgres-password: ${{ secrets.POSTGRES_PASSWORD }}
+      email-password: ${{ secrets.EMAIL_PASSWORD }}
     with:
       registry: ghcr.io/ecole-marie-marvingt
       image-name: planner/api

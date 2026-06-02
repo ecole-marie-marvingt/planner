@@ -23,12 +23,14 @@ CREATE INDEX IF NOT EXISTS idx_slots_date ON slots (date);
 
 -- ── Table bookings ───────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS bookings (
-    id          UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
-    slot_id     UUID        NOT NULL REFERENCES slots(id) ON DELETE CASCADE,
-    user_name   VARCHAR(200) NOT NULL,
-    email       VARCHAR(320) NOT NULL,
-    booked_at   TIMESTAMPTZ NOT NULL DEFAULT now(),
-    CONSTRAINT uq_booking_slot_email UNIQUE (slot_id, email)
+    id                  UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
+    slot_id             UUID        NOT NULL REFERENCES slots(id) ON DELETE CASCADE,
+    user_name           VARCHAR(200) NOT NULL,
+    email               VARCHAR(320) NOT NULL,
+    booked_at           TIMESTAMPTZ NOT NULL DEFAULT now(),
+    cancellation_token  UUID        NOT NULL DEFAULT gen_random_uuid(),
+    CONSTRAINT uq_booking_slot_email       UNIQUE (slot_id, email),
+    CONSTRAINT uq_booking_cancellation_token UNIQUE (cancellation_token)
 );
 
 CREATE INDEX IF NOT EXISTS idx_bookings_slot_id ON bookings (slot_id);

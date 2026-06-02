@@ -50,7 +50,7 @@ const bookingFormSlice = createSlice({
     });
     builder.addCase(bookSlot.fulfilled, (state, action) => {
       state.isSubmitting = false;
-      state.successMessage = `Réservation confirmée ! (${action.payload.booking.bookingId})`;
+      state.successMessage = `Réservation confirmée ! Un email de confirmation avec un lien d'annulation vous a été envoyé à ${action.payload.booking.email}.`;
       state.selectedSlot = action.payload.slot;
     });
     builder.addCase(bookSlot.rejected, (state, action) => {
