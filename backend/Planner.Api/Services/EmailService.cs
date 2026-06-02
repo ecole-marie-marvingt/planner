@@ -74,8 +74,8 @@ public sealed class EmailService(
         var date = slot.Date.ToString("dddd d MMMM yyyy",
             System.Globalization.CultureInfo.GetCultureInfo("fr-FR"));
         var cancelUrl = booking.CancellationUrl;
-        var startTime = slot.StartTime.ToString(@"hh\:mm");
-        var endTime = slot.EndTime.ToString(@"hh\:mm");
+        var startTime = slot.StartTime.ToString(@"HH\:mm");
+        var endTime = slot.EndTime.ToString(@"HH\:mm");
 
         var html = "<html lang=\"fr\"><head><meta charset=\"UTF-8\"></head><body style=\"font-family:Arial,sans-serif;background:#f4f4f4;margin:0;padding:20px;\">"
             + "<div style=\"max-width:600px;margin:0 auto;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.1)\">"
