@@ -40,7 +40,7 @@ const SlotCard: React.FC<Props> = ({ slot }) => {
             {statusLabel[slot.status]}
           </span>
           <span className="slot-capacity">
-            {slot.bookedCount}/{slot.capacity} place
+            {slot.capacity - slot.bookedCount}/{slot.capacity} place
             {slot.capacity > 1 ? 's' : ''}
           </span>
         </div>
