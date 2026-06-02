@@ -9,7 +9,8 @@ public sealed class EmailSettings
     public string UserName { get; init; } = string.Empty;
     public string Password { get; init; } = string.Empty;
     public bool UseSsl { get; init; } = true;
-    public string FromAddress { get; init; } = "noreply@ecole-marie-marvingt.fr";
+    public string FromAddress { get; init; } = "mariemarvingt.noreply@gmail.com";
     public string FromName { get; init; } = "École Marie Marvingt";
+    public string? ReplyToAddress { get; init; } = null; // Optionnel, si différent de FromAddress
     public bool Enabled { get; init; } = true;
 }
