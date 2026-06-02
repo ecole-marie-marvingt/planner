@@ -1,4 +1,7 @@
 FROM mcr.microsoft.com/dotnet/aspnet:10.0
+
+RUN useradd -m planner-user
+
 USER planner-user
 WORKDIR /app
 EXPOSE 8080
