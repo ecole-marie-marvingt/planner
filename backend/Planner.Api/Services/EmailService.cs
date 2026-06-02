@@ -2,6 +2,7 @@ using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.Extensions.Options;
 using MimeKit;
+using MimeKit.Utils;
 using Planner.Api.Models;
 
 namespace Planner.Api.Services;
@@ -61,6 +62,14 @@ public sealed class EmailService(
         msg.From.Add(new MailboxAddress(settings.FromName, settings.FromAddress));
         msg.To.Add(new MailboxAddress(booking.UserName, booking.Email));
         msg.Subject = $"✅ Confirmation de réservation – {slot.Title}";
+        
+        // En-têtes pour améliorer la délivrabilité et éviter les spam
+        msg.MessageId = MimeUtils.GenerateMessageId("ecole-marie-marvingt.github.io");
+        msg.Date = DateTimeOffset.UtcNow;
+        msg.ReplyTo.Add(new MailboxAddress(settings.FromName, settings.FromAddress));
+        msg.Headers.Add("X-Mailer", "Planner API v1.0");
+        msg.Headers.Add("List-Unsubscribe-Post", "List-Unsubscribe=One-Click");
+        msg.Headers.Add("List-Unsubscribe", $"<mailto:{settings.FromAddress}?subject=unsubscribe>");
 
         var date = slot.Date.ToString("dddd d MMMM yyyy",
             System.Globalization.CultureInfo.GetCultureInfo("fr-FR"));
