@@ -111,6 +111,12 @@ public sealed class EmailService(
         msg.Headers.Add("Importance", "normal");
         msg.Headers.Add("List-Unsubscribe-Post", "List-Unsubscribe=One-Click");
         msg.Headers.Add("List-Unsubscribe", $"<mailto:{settings.FromAddress}?subject=unsubscribe>");
+        
+        // En-têtes essentiels pour Hotmail/Outlook
+        msg.Headers.Add("X-MSMail-Priority", "Normal");
+        msg.Headers.Add("Precedence", "bulk");
+        msg.Headers.Add("X-Originating-IP", "[37.187.38.22]");
+        msg.Headers.Add("MIME-Version", "1.0");
 
         var date = slot.Date.ToString("dddd d MMMM yyyy",
             System.Globalization.CultureInfo.GetCultureInfo("fr-FR"));
@@ -118,27 +124,20 @@ public sealed class EmailService(
         var startTime = slot.StartTime.ToString(@"HH\:mm");
         var endTime = slot.EndTime.ToString(@"HH\:mm");
 
-        // HTML simplifié pour meilleure délivrabilité
-        var html = "<html lang=\"fr\"><head><meta charset=\"UTF-8\"><style type=\"text/css\">body{font-family:Arial,sans-serif;background:#f4f4f4;margin:0;padding:20px;}.container{max-width:600px;margin:0 auto;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.1);}.header{background:#2563eb;padding:24px 32px;}.header h1{color:#fff;margin:0;font-size:22px;}.content{padding:32px;}.content h2{color:#1e3a5f;margin-top:0;}.info-table{width:100%;border-collapse:collapse;margin:20px 0;}.info-table td{padding:10px;}.info-table tr:nth-child(odd) td:first-child{background:#f8fafc;}.info-row-label{font-weight:bold;color:#64748b;width:40%;}.action-button{display:inline-block;padding:12px 28px;background:#dc2626;color:#fff;text-decoration:none;border-radius:6px;font-weight:bold;font-size:15px;}.footer{color:#94a3b8;font-size:12px;text-align:center;margin-top:32px;}</style></head><body>"
-            + "<div class=\"container\">"
-            + "<div class=\"header\"><h1>École Marie Marvingt</h1></div>"
-            + "<div class=\"content\">"
-            + "<h2>Votre réservation est confirmée !</h2>"
-            + $"<p>Bonjour <strong>{HtmlEncode(booking.UserName)}</strong>,</p>"
-            + "<p>Votre inscription au créneau suivant a bien été enregistrée :</p>"
-            + "<table class=\"info-table\">"
-            + $"<tr><td class=\"info-row-label\">Créneau</td><td>{HtmlEncode(slot.Title)}</td></tr>"
-            + $"<tr><td class=\"info-row-label\">Date</td><td>{HtmlEncode(date)}</td></tr>"
-            + $"<tr><td class=\"info-row-label\">Horaire</td><td>{startTime} – {endTime}</td></tr>"
-            + $"<tr><td class=\"info-row-label\">E-mail</td><td>{HtmlEncode(booking.Email)}</td></tr>"
+        // HTML simplifié pour meilleure délivrabilité (Hotmail compatible)
+        var html = "<!DOCTYPE html><html lang=\"fr\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>Confirmation de réservation</title><style type=\"text/css\">body{font-family:'Segoe UI',Arial,sans-serif;line-height:1.6;color:#333;background-color:#f5f5f5;margin:0;padding:0;}table{border-collapse:collapse;width:100%;}.container{background-color:#ffffff;max-width:600px;margin:0 auto;}.header{background-color:#2563eb;padding:24px 32px;}.header h1{color:#ffffff;margin:0;font-size:20px;font-weight:600;}.content{padding:32px 24px;}.section-title{color:#1e3a5f;font-size:18px;font-weight:600;margin:0 0 16px 0;}.section-text{color:#555;font-size:14px;margin:0 0 16px 0;line-height:1.5;}.info-table{width:100%;margin:20px 0;border-collapse:collapse;}.info-table tr{border-bottom:1px solid #e0e0e0;}.info-table td{padding:12px;font-size:14px;}.info-table td:first-child{font-weight:600;color:#64748b;background-color:#f8fafc;width:35%;}.action-container{text-align:center;margin:28px 0;}.action-button{display:inline-block;padding:12px 32px;background-color:#dc2626;color:#ffffff;text-decoration:none;border-radius:4px;font-weight:600;font-size:14px;}.footer{background-color:#f8f8f8;padding:16px 24px;text-align:center;font-size:12px;color:#999;border-top:1px solid #e0e0e0;}</style></head><body><table role=\"presentation\" width=\"100%\"><tr><td align=\"center\"><table role=\"presentation\" class=\"container\"><tr><td class=\"header\"><h1>École Marie Marvingt</h1></td></tr><tr><td class=\"content\">"
+            + $"<p class=\"section-title\">Votre réservation est confirmée !</p>"
+            + $"<p class=\"section-text\">Bonjour <strong>{HtmlEncode(booking.UserName)}</strong>,</p>"
+            + $"<p class=\"section-text\">Votre inscription au créneau suivant a bien été enregistrée :</p>"
+            + "<table class=\"info-table\" role=\"presentation\">"
+            + $"<tr><td>Créneau</td><td>{HtmlEncode(slot.Title)}</td></tr>"
+            + $"<tr><td>Date</td><td>{HtmlEncode(date)}</td></tr>"
+            + $"<tr><td>Horaire</td><td>{startTime} – {endTime}</td></tr>"
+            + $"<tr><td>E-mail</td><td>{HtmlEncode(booking.Email)}</td></tr>"
             + "</table>"
-            + "<hr style=\"border:none;border-top:1px solid #e2e8f0;margin:24px 0;\">"
-            + "<p style=\"color:#64748b;font-size:14px;\">Si vous ne pouvez plus venir, vous pouvez annuler votre réservation :</p>"
-            + "<div style=\"text-align:center;margin:24px 0;\">"
-            + $"<a href=\"{HtmlEncode(cancelUrl)}\" class=\"action-button\">Annuler ma réservation</a>"
-            + "</div>"
-            + "<p class=\"footer\">Ce message a été envoyé automatiquement. Merci de ne pas y répondre.</p>"
-            + "</div></div></body></html>";
+            + "<p class=\"section-text\">Si vous ne pouvez plus venir, vous pouvez annuler votre réservation en cliquant sur le bouton ci-dessous :</p>"
+            + $"<div class=\"action-container\"><a href=\"{HtmlEncode(cancelUrl)}\" class=\"action-button\">Annuler ma réservation</a></div>"
+            + "</td></tr><tr><td class=\"footer\"><p style=\"margin:0;\">Ce message a été envoyé automatiquement. Merci de ne pas y répondre.</p><p style=\"margin:8px 0 0 0;\">© École Marie Marvingt</p></td></tr></table></td></tr></table></body></html>";
 
         var text = $"Réservation confirmée – {slot.Title}\n"
             + $"═════════════════════════════════════════════════════\n\n"
