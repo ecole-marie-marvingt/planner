@@ -7,6 +7,8 @@ on:
       - feature/*
       - hotfix/*
       - release/*
+    tags:
+      - '*.*.*'
   pull_request:
     types: [opened, synchronize, reopened]
   
@@ -27,9 +29,15 @@ jobs:
     needs: build
     secrets:
       github-token: ${{ secrets.GITHUB_TOKEN }}
+      ssh-host: ${{ secrets.SSH_HOST }}
+      ssh-port: ${{ secrets.SSH_PORT }}
+      ssh-username: ${{ secrets.SSH_USERNAME }}
+      ssh-key: ${{ secrets.SSH_KEY }}
     with:
       registry: ghcr.io/ecole-marie-marvingt
       image-name: planner/api
+      push: ${{ startsWith(github.ref, 'refs/tags/') }}
+      deploy: ${{ startsWith(github.ref, 'refs/tags/') }}
     permissions:
       contents: read
       packages: write

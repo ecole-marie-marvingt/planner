@@ -8,6 +8,11 @@ on:
         required: false
         default: true
         type: boolean
+      deploy:
+        description: 'Deploy application'
+        required: false
+        default: true
+        type: boolean
       registry:
         description: 'Docker registry'
         required: true
@@ -22,6 +27,21 @@ on:
       github-token:
         description: 'Github token'
         required: true
+      ssh-host:
+        description: 'SSH server host'
+        required: false
+      ssh-port:
+        description: 'SSH server port'
+        required: false
+      ssh-username:
+        description: 'SSH username'
+        required: false
+      ssh-key:
+        description: 'SSH private key'
+        required: false
+      ssh-known-hosts:
+        description: 'SSH known hosts'
+        required: false
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -67,3 +87,46 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           secrets: |
             GIT_AUTH_TOKEN=${{ secrets.github-token }}
+
+  deploy:
+    needs: publish
+    runs-on: ubuntu-latest
+    if: inputs.deploy == true
+    
+    permissions:
+      packages: read
+
+    steps:
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.ssh-key }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -p ${{ secrets.ssh-port || 22 }} -H ${{ secrets.ssh-host }} >> ~/.ssh/known_hosts 2>/dev/null || true
+      
+      - name: Deploy container via SSH
+        run: |
+          ssh -p ${{ secrets.ssh-port || 22 }} ${{ secrets.ssh-username }}@${{ secrets.ssh-host }} << 'EOF'
+          # Login to Docker registry
+          echo "${{ secrets.github-token }}" | docker login -u "${{ github.actor }}" --password-stdin ${{ inputs.registry }}
+          
+          # Pull latest image
+          docker pull ${{ inputs.registry }}/${{ inputs.image-name }}:latest
+          
+          # Stop and remove existing container if it exists
+          docker stop planner-app 2>/dev/null || true
+          docker rm planner-app 2>/dev/null || true
+          
+          # Run new container
+          docker run -d \
+            --name planner-app \
+            --restart unless-stopped \
+            -p 8090:8080 \
+            ${{ inputs.registry }}/${{ inputs.image-name }}:latest
+          
+          # Clean up old images
+          docker image prune -f
+          
+          # Logout from Docker registry
+          docker logout ${{ inputs.registry }}
+          EOF
