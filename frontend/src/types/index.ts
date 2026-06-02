@@ -5,8 +5,8 @@ export type SlotStatus = 'available' | 'full';
 export interface Slot {
   id: string;
   date: string;        // YYYY-MM-DD
-  startTime: string;   // HH:mm
-  endTime: string;     // HH:mm
+  startTime: string;   // HH:mm:ss
+  endTime: string;     // HH:mm:ss
   title: string;
   description?: string;
   capacity: number;

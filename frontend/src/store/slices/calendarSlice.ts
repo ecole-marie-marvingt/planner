@@ -1,12 +1,10 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import type { CalendarState } from '../../types';
 
-const now = new Date();
-
 const initialState: CalendarState = {
-  currentMonth: now.getMonth(),
-  currentYear: now.getFullYear(),
-  selectedDate: null,
+  currentMonth: 5, // Juin (0-indexed)
+  currentYear: 2026,
+  selectedDate: '2026-06-30',
 };
 
 const calendarSlice = createSlice({

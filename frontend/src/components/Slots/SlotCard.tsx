@@ -25,7 +25,7 @@ const SlotCard: React.FC<Props> = ({ slot }) => {
   return (
     <article className={`slot-card slot-card--${slot.status}`}>
       <div className="slot-card__time">
-        {slot.startTime} – {slot.endTime}
+        {slot.startTime.slice(0, 5)} – {slot.endTime.slice(0, 5)}
       </div>
       <div className="slot-card__info">
         <h3 className="slot-card__title">{slot.title}</h3>
