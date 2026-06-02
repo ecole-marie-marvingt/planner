@@ -10,7 +10,6 @@ interface Props {
 
 const statusLabel: Record<Slot['status'], string> = {
   available: 'Disponible',
-  booked: 'Réservé',
   full: 'Complet',
 };
 
@@ -66,7 +65,7 @@ const SlotCard: React.FC<Props> = ({ slot }) => {
           </button>
         ) : (
           <button className="btn btn--disabled" disabled>
-            {slot.status === 'full' ? 'Complet' : 'Indisponible'}
+            Complet
           </button>
         )}
       </div>

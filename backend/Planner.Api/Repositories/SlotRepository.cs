@@ -24,7 +24,6 @@ public sealed class SlotRepository(NpgsqlDataSource dataSource) : ISlotRepositor
                 COUNT(b.id)::int AS bookedcount,
                 CASE
                     WHEN COUNT(b.id) >= s.capacity THEN 'full'
-                    WHEN COUNT(b.id) > 0           THEN 'booked'
                     ELSE 'available'
                 END AS status,
                 COALESCE(bool_or(b.email = @UserEmail), FALSE) AS isbookedbyMe,
@@ -63,7 +62,6 @@ public sealed class SlotRepository(NpgsqlDataSource dataSource) : ISlotRepositor
                 COUNT(b.id)::int AS bookedcount,
                 CASE
                     WHEN COUNT(b.id) >= s.capacity THEN 'full'
-                    WHEN COUNT(b.id) > 0           THEN 'booked'
                     ELSE 'available'
                 END AS status,
                 COALESCE(bool_or(b.email = @UserEmail), FALSE) AS isbookedbyMe,
@@ -120,7 +118,6 @@ public sealed class SlotRepository(NpgsqlDataSource dataSource) : ISlotRepositor
         Status = r.Status switch
         {
             "full"      => SlotStatus.Full,
-            "booked"    => SlotStatus.Booked,
             _           => SlotStatus.Available
         },
         IsBookedByMe = r.IsBookedByMe,

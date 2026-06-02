@@ -1,6 +1,6 @@
 // ─── Modèles ─────────────────────────────────────────────────────────────────
 
-export type SlotStatus = 'available' | 'booked' | 'full';
+export type SlotStatus = 'available' | 'full';
 
 export interface Slot {
   id: string;
