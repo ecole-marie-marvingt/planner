@@ -4,7 +4,7 @@
  * GET    /api/slots?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD   → Slot[]
  * GET    /api/slots/:id                                        → Slot
  * POST   /api/slots/:id/book                                   → BookSlotResponse
- *          body: { userName, email }
+ *          body: { userName, email, phoneNumber }
  * DELETE /api/slots/:id/book/:bookingId                        → CancelBookingResponse
  * GET    /api/bookings/cancel/:cancellationToken               → CancelBookingResponse
  */

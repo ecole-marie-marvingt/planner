@@ -8,7 +8,7 @@ public sealed class BookingRepository(NpgsqlDataSource dataSource) : IBookingRep
 {
     private const string SelectColumns = """
         id AS bookingid, slot_id AS slotid, user_name AS username,
-        email, booked_at AS bookedat, cancellation_token AS cancellationtoken
+        email, phone_number AS phonenumber, booked_at AS bookedat, cancellation_token AS cancellationtoken
         """;
 
     public async Task<Booking?> GetBookingAsync(Guid bookingId, CancellationToken ct = default)
@@ -31,13 +31,14 @@ public sealed class BookingRepository(NpgsqlDataSource dataSource) : IBookingRep
         Guid slotId,
         string userName,
         string email,
+        string phoneNumber,
         CancellationToken ct = default)
     {
         const string sql = """
-            INSERT INTO bookings (id, slot_id, user_name, email, booked_at, cancellation_token)
-            VALUES (@Id, @SlotId, @UserName, @Email, @BookedAt, @CancellationToken)
+            INSERT INTO bookings (id, slot_id, user_name, email, phone_number, booked_at, cancellation_token)
+            VALUES (@Id, @SlotId, @UserName, @Email, @PhoneNumber, @BookedAt, @CancellationToken)
             RETURNING id AS bookingid, slot_id AS slotid, user_name AS username,
-                      email, booked_at AS bookedat, cancellation_token AS cancellationtoken
+                      email, phone_number AS phonenumber, booked_at AS bookedat, cancellation_token AS cancellationtoken
             """;
 
         var param = new
@@ -46,6 +47,7 @@ public sealed class BookingRepository(NpgsqlDataSource dataSource) : IBookingRep
             SlotId = slotId,
             UserName = userName,
             Email = email,
+            PhoneNumber = phoneNumber,
             BookedAt = DateTimeOffset.UtcNow,
             CancellationToken = Guid.NewGuid()
         };

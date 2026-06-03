@@ -70,7 +70,7 @@ public class SlotsController(
         if (await bookingRepo.ExistsAsync(id, request.Email, ct))
             return Conflict("Vous avez déjà réservé ce créneau.");
 
-        var booking = await bookingRepo.CreateBookingAsync(id, request.UserName, request.Email, ct);
+        var booking = await bookingRepo.CreateBookingAsync(id, request.UserName, request.Email, request.PhoneNumber, ct);
 
         // Construire l'URL d'annulation et envoyer l'email de confirmation
         var frontendUrl = configuration["Frontend:Url"] ?? "https://ecole-marie-marvingt.github.io/planner";

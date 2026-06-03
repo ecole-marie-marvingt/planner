@@ -4,13 +4,14 @@ import {
   closeBookingModal,
   setUserName,
   setEmail,
+  setPhoneNumber,
 } from '../../store/slices/bookingFormSlice';
 import { bookSlot } from '../../store/slices/slotsSlice';
 import Spinner from '../common/Spinner';
 
 const BookingModal: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { isOpen, selectedSlot, userName, email, isSubmitting, error, successMessage } =
+  const { isOpen, selectedSlot, userName, email, phoneNumber, isSubmitting, error, successMessage } =
     useAppSelector((s) => s.bookingForm);
 
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -32,7 +33,7 @@ const BookingModal: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    dispatch(bookSlot({ slotId: selectedSlot.id, payload: { userName, email } }));
+    dispatch(bookSlot({ slotId: selectedSlot.id, payload: { userName, email, phoneNumber } }));
   };
 
   const handleClose = () => dispatch(closeBookingModal());
@@ -100,6 +101,18 @@ const BookingModal: React.FC = () => {
                 />
               </label>
 
+              <label className="form-field">
+                <span>Numéro de téléphone</span>
+                <input
+                  type="tel"
+                  value={phoneNumber}
+                  onChange={(e) => dispatch(setPhoneNumber(e.target.value))}
+                  required
+                  placeholder="+33 6 12 34 56 78"
+                  disabled={isSubmitting}
+                />
+              </label>
+
               {error && (
                 <p className="form-error" role="alert">
                   {error}
@@ -118,7 +131,7 @@ const BookingModal: React.FC = () => {
                 <button
                   type="submit"
                   className="btn btn--primary"
-                  disabled={isSubmitting || !userName || !email}
+                  disabled={isSubmitting || !userName || !email || !phoneNumber}
                 >
                   {isSubmitting ? <Spinner size={16} label="Envoi…" /> : 'Confirmer'}
                 </button>

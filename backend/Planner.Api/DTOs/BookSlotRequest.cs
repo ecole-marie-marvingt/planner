@@ -9,4 +9,7 @@ public sealed class BookSlotRequest
 
     [Required, EmailAddress]
     public string Email { get; init; } = string.Empty;
+
+    [Required, Phone]
+    public string PhoneNumber { get; init; } = string.Empty;
 }

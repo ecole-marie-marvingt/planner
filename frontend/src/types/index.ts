@@ -21,6 +21,7 @@ export interface Booking {
   slotId: string;
   userName: string;
   email: string;
+  phoneNumber: string;
   bookedAt: string; // ISO 8601
   cancellationToken: string;
 }
@@ -35,6 +36,7 @@ export interface GetSlotsParams {
 export interface BookSlotRequest {
   userName: string;
   email: string;
+  phoneNumber: string;
 }
 
 export interface BookSlotResponse {
@@ -65,6 +67,7 @@ export interface BookingFormState {
   selectedSlot: Slot | null;
   userName: string;
   email: string;
+  phoneNumber: string;
   isSubmitting: boolean;
   error: string | null;
   successMessage: string | null;

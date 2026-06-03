@@ -16,6 +16,7 @@ public interface IBookingRepository
         Guid slotId,
         string userName,
         string email,
+        string phoneNumber,
         CancellationToken ct = default);
 
     Task DeleteBookingAsync(Guid bookingId, CancellationToken ct = default);

@@ -7,6 +7,7 @@ const initialState: BookingFormState = {
   selectedSlot: null,
   userName: '',
   email: '',
+  phoneNumber: '',
   isSubmitting: false,
   error: null,
   successMessage: null,
@@ -21,6 +22,7 @@ const bookingFormSlice = createSlice({
       state.selectedSlot = action.payload;
       state.userName = '';
       state.email = '';
+      state.phoneNumber = '';
       state.error = null;
       state.successMessage = null;
     },
@@ -35,6 +37,9 @@ const bookingFormSlice = createSlice({
     },
     setEmail(state, action: PayloadAction<string>) {
       state.email = action.payload;
+    },
+    setPhoneNumber(state, action: PayloadAction<string>) {
+      state.phoneNumber = action.payload;
     },
     clearMessages(state) {
       state.error = null;
@@ -80,6 +85,7 @@ export const {
   closeBookingModal,
   setUserName,
   setEmail,
+  setPhoneNumber,
   clearMessages,
 } = bookingFormSlice.actions;
 
