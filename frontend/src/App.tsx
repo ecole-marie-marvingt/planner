@@ -4,6 +4,7 @@ import CalendarGrid from './components/Calendar/CalendarGrid';
 import SlotList from './components/Slots/SlotList';
 import BookingModal from './components/Slots/BookingModal';
 import CancellationPage from './components/Slots/CancellationPage';
+import ErrorBanner from './components/common/ErrorBanner';
 import './App.css';
 
 // Détection du token d'annulation dans l'URL (?cancel=<token>)
@@ -16,6 +17,7 @@ const App: React.FC = () => {
 
   return (
     <div className="app">
+      <ErrorBanner />
       <header className="app-header">
         <h1 className="app-title">📅 Fête de l'école élémentaire</h1>
         <p className="app-subtitle">École Marie Marvingt</p>

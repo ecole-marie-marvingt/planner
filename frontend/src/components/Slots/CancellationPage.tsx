@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { slotsApi } from '../../api/slotsApi';
+import { useAppDispatch } from '../../hooks';
+import { setError } from '../../store/slices/errorSlice';
 import Spinner from '../common/Spinner';
+import ErrorBanner from '../common/ErrorBanner';
 
 interface Props {
   cancellationToken: string;
@@ -9,8 +12,10 @@ interface Props {
 type Status = 'loading' | 'success' | 'already-cancelled' | 'error';
 
 const CancellationPage: React.FC<Props> = ({ cancellationToken }) => {
+  const dispatch = useAppDispatch();
   const [status, setStatus] = useState<Status>('loading');
   const [slotTitle, setSlotTitle] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -28,6 +33,8 @@ const CancellationPage: React.FC<Props> = ({ cancellationToken }) => {
       .catch((err: Error) => {
         if (!cancelled) {
           const msg = err.message ?? '';
+          setErrorMessage(msg);
+          dispatch(setError(msg));
           setStatus(msg.includes('introuvable') ? 'already-cancelled' : 'error');
         }
       });
@@ -35,10 +42,11 @@ const CancellationPage: React.FC<Props> = ({ cancellationToken }) => {
     return () => {
       cancelled = true;
     };
-  }, [cancellationToken]);
+  }, [cancellationToken, dispatch]);
 
   return (
     <div className="cancellation-page">
+      <ErrorBanner />
       <header className="app-header">
         <h1 className="app-title">📅 Réservation de créneaux</h1>
         <p className="app-subtitle">École Marie Marvingt</p>
@@ -75,7 +83,8 @@ const CancellationPage: React.FC<Props> = ({ cancellationToken }) => {
             <>
               <div className="cancellation-page__icon">ℹ️</div>
               <h2>Réservation déjà annulée</h2>
-              <p>Cette réservation a déjà été annulée ou n'existe pas.</p>
+              {errorMessage && <p>{errorMessage}</p>}
+              {!errorMessage && <p>Cette réservation a déjà été annulée ou n'existe pas.</p>}
               <a href={window.location.pathname} className="btn btn--secondary">
                 Retour au calendrier
               </a>
@@ -86,7 +95,10 @@ const CancellationPage: React.FC<Props> = ({ cancellationToken }) => {
             <>
               <div className="cancellation-page__icon">❌</div>
               <h2>Une erreur est survenue</h2>
-              <p>Impossible d'annuler la réservation. Veuillez réessayer ultérieurement.</p>
+              {errorMessage && <p>{errorMessage}</p>}
+              {!errorMessage && (
+                <p>Impossible d'annuler la réservation. Veuillez réessayer ultérieurement.</p>
+              )}
               <button className="btn btn--secondary" onClick={() => window.location.reload()}>
                 Réessayer
               </button>

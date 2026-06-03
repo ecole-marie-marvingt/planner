@@ -5,6 +5,7 @@ import {
 } from '@reduxjs/toolkit';
 import { slotsApi } from '../../api/slotsApi';
 import type { Slot, SlotsState, BookSlotRequest } from '../../types';
+import { setError } from './errorSlice';
 
 // ─── Thunks ───────────────────────────────────────────────────────────────────
 
@@ -12,13 +13,15 @@ export const fetchSlotsForRange = createAsyncThunk(
   'slots/fetchForRange',
   async (
     { startDate, endDate }: { startDate: string; endDate: string },
-    { rejectWithValue }
+    { rejectWithValue, dispatch }
   ) => {
     try {
       const slots = await slotsApi.getSlots({ startDate, endDate });
       return slots;
     } catch (err) {
-      return rejectWithValue((err as Error).message);
+      const errorMsg = (err as Error).message;
+      dispatch(setError(errorMsg));
+      return rejectWithValue(errorMsg);
     }
   }
 );
@@ -27,13 +30,15 @@ export const bookSlot = createAsyncThunk(
   'slots/book',
   async (
     { slotId, payload }: { slotId: string; payload: BookSlotRequest },
-    { rejectWithValue }
+    { rejectWithValue, dispatch }
   ) => {
     try {
       const response = await slotsApi.bookSlot(slotId, payload);
       return response;
     } catch (err) {
-      return rejectWithValue((err as Error).message);
+      const errorMsg = (err as Error).message;
+      dispatch(setError(errorMsg));
+      return rejectWithValue(errorMsg);
     }
   }
 );
@@ -42,13 +47,15 @@ export const cancelBooking = createAsyncThunk(
   'slots/cancel',
   async (
     { slotId, bookingId }: { slotId: string; bookingId: string },
-    { rejectWithValue }
+    { rejectWithValue, dispatch }
   ) => {
     try {
       const response = await slotsApi.cancelBooking(slotId, bookingId);
       return response;
     } catch (err) {
-      return rejectWithValue((err as Error).message);
+      const errorMsg = (err as Error).message;
+      dispatch(setError(errorMsg));
+      return rejectWithValue(errorMsg);
     }
   }
 );

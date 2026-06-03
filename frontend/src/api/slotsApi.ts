@@ -24,12 +24,43 @@ const api = axios.create({
   timeout: 10_000,
 });
 
+/**
+ * Extrait le message d'erreur de la réponse API
+ * Gère les erreurs 4xx (400, 404, 409, etc.)
+ */
+function extractErrorMessage(error: any): string {
+  // Cas 1: Erreur avec status code (4xx, 5xx)
+  if (error.response?.status) {
+    // Si le body contient directement une string (message)
+    if (typeof error.response.data === 'string') {
+      return error.response.data;
+    }
+
+    // Si le body est un objet avec une propriété message
+    if (error.response.data?.message && typeof error.response.data.message === 'string') {
+      return error.response.data.message;
+    }
+
+    // Fallback avec le statusText HTTP
+    if (error.response.statusText) {
+      return error.response.statusText;
+    }
+  }
+
+  // Cas 2: Erreur réseau sans réponse
+  if (error.message) {
+    return error.message;
+  }
+
+  // Cas 3: Erreur inconnue
+  return 'Une erreur inconnue s\'est produite.';
+}
+
 // Intercepteur global pour les erreurs
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    const message: string =
-      error.response?.data?.message ?? error.message ?? 'Erreur inconnue';
+    const message = extractErrorMessage(error);
     return Promise.reject(new Error(message));
   }
 );

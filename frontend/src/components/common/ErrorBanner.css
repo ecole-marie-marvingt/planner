@@ -1,0 +1,89 @@
+.error-banner {
+  position: fixed;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #fee;
+  border: 2px solid #f77;
+  border-radius: 0.5rem;
+  padding: 1rem 1.5rem;
+  box-shadow: 0 4px 12px rgba(255, 119, 119, 0.2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  max-width: 90%;
+  width: 100%;
+  z-index: 1000;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.error-banner__content {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+}
+
+.error-banner__icon {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.error-banner__message {
+  color: #c33;
+  font-weight: 500;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.error-banner__close {
+  background: none;
+  border: none;
+  color: #c33;
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: opacity 0.2s;
+}
+
+.error-banner__close:hover {
+  opacity: 0.7;
+}
+
+.error-banner__close:focus {
+  outline: 2px solid #c33;
+  outline-offset: 2px;
+}
+
+/* Mode sombre si disponible */
+@media (prefers-color-scheme: dark) {
+  .error-banner {
+    background-color: #4a2a2a;
+    border-color: #d77;
+  }
+
+  .error-banner__message {
+    color: #ff9999;
+  }
+
+  .error-banner__close {
+    color: #ff9999;
+  }
+}
