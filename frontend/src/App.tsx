@@ -17,7 +17,7 @@ const App: React.FC = () => {
   return (
     <div className="app">
       <header className="app-header">
-        <h1 className="app-title">📅 Réservation de créneaux</h1>
+        <h1 className="app-title">📅 Fête de l'école élémentaire</h1>
         <p className="app-subtitle">École Marie Marvingt</p>
       </header>
 

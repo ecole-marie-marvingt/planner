@@ -6,9 +6,12 @@
 -- Nettoyage préalable (idempotent)
 TRUNCATE bookings, slots RESTART IDENTITY CASCADE;
 
--- ── Mardi 30 juin 2026 – Créneaux de 30 minutes entre 17h et 18h30 ────
+-- ── Mardi 30 juin 2026 ────
 
 INSERT INTO slots (date, start_time, end_time, title, description, capacity) VALUES
-('2026-06-30', '17:00', '17:30', 'Fête de l''école élémentaire – 17h00-17h30', NULL, 10),
-('2026-06-30', '17:30', '18:00', 'Fête de l''école élémentaire – 17h30-18h00', NULL, 10),
-('2026-06-30', '18:00', '18:30', 'Fête de l''école élémentaire – 18h00-18h30', NULL, 10);
+('2026-06-30', '13:20', '16:20', 'Préparatifs – 13h20-16h20', NULL, 8),
+('2026-06-30', '16:45', '17:15', 'Stand – 16h45-17h15', NULL, 12),
+('2026-06-30', '17:15', '17:45', 'Stand – 17h15-17h45', NULL, 12),
+('2026-06-30', '17:45', '18:15', 'Stand – 17h45-18h15', NULL, 12),
+('2026-06-30', '18:15', '18:45', 'Stand – 18h15-18h45', NULL, 12),
+('2026-06-30', '18:45', '19:15', 'Rangement – 18h45-19h15', NULL, 8);
