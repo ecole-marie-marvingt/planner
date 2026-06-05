@@ -8,6 +8,7 @@ import {
 } from '../../store/slices/bookingFormSlice';
 import { bookSlot } from '../../store/slices/slotsSlice';
 import Spinner from '../common/Spinner';
+import ErrorBanner from '../common/ErrorBanner';
 
 const BookingModal: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -61,6 +62,8 @@ const BookingModal: React.FC = () => {
           ✕
         </button>
 
+        <ErrorBanner />
+
         <h2 id="modal-title" className="booking-modal__title">
           {successMessage ? '✅ Confirmation' : 'Réserver un créneau'}
         </h2>
@@ -112,12 +115,6 @@ const BookingModal: React.FC = () => {
                   disabled={isSubmitting}
                 />
               </label>
-
-              {error && (
-                <p className="form-error" role="alert">
-                  {error}
-                </p>
-              )}
 
               <div className="booking-form__actions">
                 <button
